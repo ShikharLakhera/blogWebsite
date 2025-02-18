@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ensure full height of the page */
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #333;
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Logo and Nav Links Container */
+        .nav-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Blog Logo */
+        .logo a {
+            font-size: 24px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px; /* Spacing between logo and menu */
+            transition: color 0.3s ease-in-out;
+        }
+
+        .logo a:hover {
+            color: #f8d210;
+        }
+
+        /* Navbar Links */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-right: 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav ul li a:hover {
+            color: #f8d210;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-left: auto; /* Pushes the search to the right */
+        }
+
+        .search-container input {
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background: #f8d210;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .search-container button:hover {
+            background: #e0b500;
+        }
+
+        /* Push content below navbar */
+        main {
+            flex: 1;
+            padding: 80px 20px 20px; /* Prevents overlap with navbar */
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        {% block css %}
+        {% endblock %}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <!-- Clickable Blog Logo -->
+            <div class="logo">
+                <a href="{% url 'blog:home' %}">My Blog</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'blog:home' %}">Home</a></li>
+                    <li><a href="{% url 'blogHome:blogHome' %}">Blog</a></li>
+                    <li><a href="{% url 'blog:about' %}">About</a></li>
+                    <li><a href="{% url 'blog:contact' %}">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+            <form action="{% url 'blog:search' %}" method="GET">
+                <input type="text" name="query" placeholder="Search...">
+                <button type="submit">🔍</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        {% block body %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 My Blog. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

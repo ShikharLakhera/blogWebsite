@@ -1,0 +1,89 @@
+{% extends "blog/basic.html" %}
+
+{% block title %}Blog Home{% endblock %}
+
+{% block css %}
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #007BFF;
+    }
+
+    .blog-post {
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .blog-post:last-child {
+        border-bottom: none;
+    }
+
+    .blog-post h3 {
+        margin: 0;
+        color: #333;
+    }
+
+    .blog-post h3 a {
+        text-decoration: none;
+        color: #007BFF;
+        transition: color 0.3s;
+    }
+
+    .blog-post h3 a:hover {
+        color: #0056b3;
+    }
+
+    .blog-post p {
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .read-more {
+        display: inline-block;
+        padding: 8px 15px;
+        background: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .read-more:hover {
+        background: #0056b3;
+    }
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Blog Home</h2>
+    <p>Welcome to My Blog! Here are our latest posts:</p>
+
+    {% for blog in blogs %}
+        <div class="blog-post">
+            <h3>
+                <a href="{% url 'blogHome:blogPage' blog.slug %}">{{ blog.title }}</a>
+            </h3>
+            <p><strong>Author:</strong> {{ blog.author }} | <strong>Published on:</strong> {{ blog.timeStamp|date:"F d, Y" }}</p>
+            <p>{{ blog.content|truncatewords:30 }}</p>
+            <a href="{% url 'blogHome:blogPage' blog.slug %}" class="read-more">Read More</a>
+        </div>
+    {% empty %}
+        <p>No blog posts yet. Check back soon!</p>
+    {% endfor %}
+</div>
+{% endblock %}
