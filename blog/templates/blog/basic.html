@@ -4,171 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Blog{% endblock %}</title>
-    {% comment %} <link href="https://cdn.tailwindcss.com" rel="stylesheet"> {% endcomment %}
-      
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-        /* Global Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        /* Ensure full height of the page */
-        html, body {
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #333;
-            color: #fff;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        /* Logo and Nav Links Container */
-        .nav-container {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Blog Logo */
-        .logo a {
-            font-size: 24px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #fff;
-            text-decoration: none;
-            margin-right: 20px; /* Spacing between logo and menu */
-            transition: color 0.3s ease-in-out;
-        }
-
-        .logo a:hover {
-            color: #f8d210;
-        }
-
-        /* Navbar Links */
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-
-        nav ul li {
-            margin-right: 15px;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 400;
-            transition: color 0.3s ease-in-out;
-        }
-
-        nav ul li a:hover {
-            color: #f8d210;
-        }
-
-        /* Search Bar */
-        .search-container {
-            margin-left: auto; /* Pushes the search to the right */
-        }
-
-        .search-container input {
-            padding: 8px;
-            font-size: 14px;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        .search-container button {
-            padding: 8px 12px;
-            font-size: 14px;
-            background: #f8d210;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease-in-out;
-        }
-
-        .search-container button:hover {
-            background: #e0b500;
-        }
-
-        /* Push content below navbar */
-        main {
-            flex: 1;
-            padding: 80px 20px 20px; /* Prevents overlap with navbar */
-        }
-
-        /* Footer */
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 15px;
-            font-size: 14px;
-            box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        {% block css %}
-        {% endblock %}
-    </style>
     {% block head %}
     {% endblock %}
 </head>
-<body>
-    <header>
-        <div class="nav-container">
-            <!-- Clickable Blog Logo -->
-            <div class="logo">
-                <a href="{% url 'blog:home' %}">My Blog</a>
+<body class="bg-gray-100 font-poppins min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="bg-gray-900 text-white fixed top-0 left-0 w-full shadow-lg z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="text-xl font-semibold uppercase">
+                <a href="{% url 'blog:home' %}" class="hover:text-yellow-400 transition">My Blog</a>
             </div>
+
+            <!-- Navigation Links -->
             <nav>
-                <ul>
-                    <li><a href="{% url 'blog:home' %}">Home</a></li>
-                    <li><a href="{% url 'blogHome:blogHome' %}">Blog</a></li>
-                    <li><a href="{% url 'blog:about' %}">About</a></li>
-                    <li><a href="{% url 'blog:contact' %}">Contact</a></li>
+                <ul class="flex space-x-6">
+                    <li><a href="{% url 'blog:home' %}" class="hover:text-yellow-400">Home</a></li>
+                    <li><a href="{% url 'blogHome:blogHome' %}" class="hover:text-yellow-400">Blog</a></li>
+                    <li><a href="{% url 'blog:about' %}" class="hover:text-yellow-400">About</a></li>
+                    <li><a href="{% url 'blog:contact' %}" class="hover:text-yellow-400">Contact</a></li>
                 </ul>
             </nav>
-        </div>
-        
-        <!-- Search Bar -->
-        <div class="search-container">
-            <form action="{% url 'blog:search' %}" method="GET">
-                <input type="text" name="query" placeholder="Search...">
-                <button type="submit">🔍</button>
-            </form>
+
+            <!-- Search Bar -->
+            <div class="relative">
+                <form action="{% url 'blog:search' %}" method="GET">
+                    <input type="text" name="query" placeholder="Search..."
+                        class="px-3 py-1 rounded-md border border-gray-300 text-black focus:outline-none focus:ring focus:ring-yellow-300">
+                    <button type="submit" class="ml-2 px-3 py-1 bg-yellow-400 text-black rounded-md hover:bg-yellow-500">
+                        🔍
+                    </button>
+                </form>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="space-x-4">
+                <a href="{% url 'blog:signup' %}" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Sign Up</a>
+                <a href="{% url 'blog:login' %}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</a>
+            </div>
         </div>
     </header>
 
-    <main>
+    <!-- Main Content Wrapper (Flex-1 to push footer down) -->
+    <div class="flex-1 mt-20 px-4 py-10">
         {% block body %}
         {% endblock %}
-    </main>
+    </div>
 
-    <footer>
+    <!-- Footer (Stays at Bottom) -->
+    <footer class="bg-gray-900 text-white text-center py-4">
         <p>&copy; 2025 My Blog. All Rights Reserved.</p>
     </footer>
+
 </body>
 </html>

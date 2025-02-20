@@ -2,185 +2,40 @@
 
 {% block title %}Home | My Blog{% endblock %}
 
-{% block css %}
-<style>
-/* Reset & Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Prevents unwanted horizontal scroll */
-}
-
-/* Hero Section */
-.hero {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 50vh;  /* Explicit height to ensure correct spacing */
-    background: url('https://source.unsplash.com/1600x900/?technology,writing') no-repeat center center/cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 0;
-}
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-}
-.hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 700px;
-}
-.hero h1 {
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-.hero p {
-    font-size: 1rem;
-    margin-bottom: 15px;
-}
-.btn-discover {
-    display: inline-block;
-    font-size: 1rem;
-    padding: 10px 25px;
-    background: #ff6b6b;
-    color: white;
-    border-radius: 30px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.3s ease-in-out;
-}
-.btn-discover:hover {
-    background: #e63946;
-    transform: scale(1.05);
-}
-
-/* Fix About Section Overlapping */
-.about-section {
-    position: relative;
-    margin-top: 50vh;  /* Push it below the Hero section */
-    background: white;
-    padding: 50px 20px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-.about-section h2 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 15px;
-}
-.about-section p {
-    font-size: 1.1rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-
-/* Blog Post Cards */
-.blog-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    margin-bottom: 20px;
-}
-.blog-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-.blog-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007BFF;
-}
-.blog-meta {
-    font-size: 0.9rem;
-    color: #777;
-}
-.blog-excerpt {
-    font-size: 1rem;
-    color: #444;
-}
-
-/* Read More Button */
-.btn-read-more {
-    display: inline-block;
-    font-size: 1rem;
-    padding: 10px 20px;
-    background: #007BFF;
-    color: white;
-    border-radius: 5px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-.btn-read-more:hover {
-    background: #0056b3;
-}
-</style>
-{% endblock %}
-
 {% block body %}
 <!-- Hero Section -->
-<div class="hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <h1>Welcome to My Blog</h1>
-        <p>Explore insightful articles and amazing stories</p>
-        <a href="#latest-posts" class="btn btn-discover">Discover More</a>
+<div class="relative w-full h-[50vh] bg-cover bg-center flex items-center justify-center text-white text-center"
+    style="background-image: url('https://source.unsplash.com/1600x900/?technology,writing');">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="relative z-10 max-w-2xl">
+        <h1 class="text-3xl font-bold mb-3">Welcome to My Blog</h1>
+        <p class="text-lg mb-4">Explore insightful articles and amazing stories</p>
+        <a href="#latest-posts" class="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full transition">Discover More</a>
     </div>
 </div>
 
 <!-- About Section -->
-<div class="container my-5">
-    <div class="about-section">
-        <h2>About This Blog</h2>
-        <p>
-            This blog is your go-to destination for valuable insights on technology, lifestyle, and much more.
-            Stay updated with engaging articles written just for you.
-        </p>
+<div class="container mx-auto mt-20 px-4">
+    <div class="bg-white p-10 rounded-lg shadow-lg text-center max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-3">About This Blog</h2>
+        <p class="text-gray-600 text-lg">This blog is your go-to destination for valuable insights on technology, lifestyle, and much more. Stay updated with engaging articles written just for you.</p>
     </div>
 </div>
 
 <!-- Blog Posts Section -->
-<div class="container mt-4" id="latest-posts">
-    <h2 class="text-center mb-4">Latest Blog Posts</h2>
-    <div class="row">
+<div class="container mx-auto mt-10 px-4" id="latest-posts">
+    <h2 class="text-center text-2xl font-bold mb-6">Latest Blog Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for post in posts %}
-        <div class="col-md-6">
-            <div class="blog-card">
-                <h4 class="blog-title">{{ post.title }}</h4>
-                <p class="blog-meta">By {{ post.author }} | {{ post.timeStamp|date:"M d, Y" }}</p>
-                <p class="blog-excerpt">{{ post.content|truncatewords:20 }}</p>
-                <a href="{% url 'blogHome:blogPage' post.slug %}" class="btn btn-read-more">Read More</a>
-            </div>
+        <div class="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-2">
+            <h4 class="text-xl font-bold text-blue-600">{{ post.title }}</h4>
+            <p class="text-sm text-gray-500">By {{ post.author }} | {{ post.timeStamp|date:"M d, Y" }}</p>
+            <p class="text-gray-700 mt-3">{{ post.content|truncatewords:20 }}</p>
+            <a href="{% url 'blogHome:blogPage' post.slug %}" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Read More</a>
         </div>
         {% empty %}
-        <p class="text-center">No blog posts available yet. Check back soon!</p>
+        <p class="text-center text-gray-600">No blog posts available yet. Check back soon!</p>
         {% endfor %}
     </div>
 </div>
-
 {% endblock %}

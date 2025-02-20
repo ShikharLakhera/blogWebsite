@@ -5,6 +5,9 @@ from django.urls import reverse_lazy
 from .forms import ContactForm
 from .models import Contact
 from blogHome.models import BlogPost
+from django.views import View
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate , login
 
 # Create your views here.
 
@@ -44,3 +47,55 @@ def search(request):
         posts=postsTitle.union(postBlog)
 
     return render(request, 'blog/search.html',{'results':posts,'query':query})
+
+class handleSignup(View):
+    def get(self, request):
+        return render(request, 'blog/signup.html')
+    
+    def post(self, request):
+        fname=request.POST.get('first_name')
+        lname=request.POST.get('last_name')
+        email=request.POST.get('email')
+        password1=request.POST.get('password1')
+        password2=request.POST.get('password2')
+        if(password1!=password2):
+            messages.error(request, 'Passwords do not match')
+            return render(request, "signup.html", {
+                "first": fname,
+                "last": lname,
+                "email": email
+            })
+        elif ( User.objects.filter(username=email).exists()):
+            messages.error(request, 'email already in use .')
+            return render(request, "signup.html", {
+                "first": fname,
+                "last": lname,
+                "email": email
+            })
+        else :
+            myuser=User.objects.create_user(username=email,email=email,password=password1)
+            myuser.first_name=fname
+            myuser.last_name=lname
+            myuser.save()
+            messages.success(request, 'User created successfully')
+            return redirect(reverse_lazy('blog:signup'))  # Redirect to homepage if user created successfully
+
+        return render(request, 'blog/indexpage/index.html')
+
+class loginhandle(View):
+    def get(self,request):
+        return render(request, 'blog/login.html')
+    
+    def post(self,request):
+
+        email=request.POST.get('email')
+        password=request.POST.get('password')
+        user=authenticate(username=email,password=password)
+
+        if user is not None:
+            login(request,user)
+            messages.success(request, 'You are now logged in')
+            return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user logged in successfully
+        else:
+            messages.error(request, 'Invalid email or password.')
+            return render(request, "blog/login.html",{'email': email})

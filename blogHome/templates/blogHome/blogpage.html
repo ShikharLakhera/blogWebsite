@@ -2,49 +2,13 @@
 
 {% block title %}{{ blog.title }}{% endblock %}
 
-{% block css %}
-<style>
-    .container {
-        max-width: 800px;
-        margin: 50px auto;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-        color: #007BFF;
-        text-align: center;
-    }
-
-    p {
-        color: #555;
-        line-height: 1.6;
-    }
-
-    .back-link {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 8px 15px;
-        background: #007BFF;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background 0.3s;
-    }
-
-    .back-link:hover {
-        background: #0056b3;
-    }
-</style>
-{% endblock %}
-
 {% block body %}
-<div class="container">
-    <h2>{{ blog.title }}</h2>
-    <p><strong>Author:</strong> {{ blog.author }} | <strong>Published on:</strong> {{ blog.timeStamp|date:"F d, Y" }}</p>
-    <p>{{ blog.content }}</p>
-    <a href="{% url 'blogHome:blogHome' %}" class="back-link">Back to Home</a>
+<div class="max-w-3xl mx-auto mt-12 p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-center text-2xl font-bold text-blue-600">{{ blog.title }}</h2>
+    <p class="text-center text-gray-500 text-sm mt-2">Author: {{ blog.author }} | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
+    <div class="text-gray-700 mt-4 leading-relaxed">
+        {{ blog.content }}
+    </div>
+    <a href="{% url 'blogHome:blogHome' %}" class="inline-block mt-6 px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-700">Back to Home</a>
 </div>
 {% endblock %}
