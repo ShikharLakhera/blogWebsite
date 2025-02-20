@@ -1,125 +1,60 @@
 {% extends "blog/basic.html" %}
 
-{% block title%}About Us{% endblock %}
+{% block title %}About Us{% endblock %}
 
 {% block css %}
-/* General Styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
+<!-- Tailwind CSS CDN -->
+{% endblock %}
 
-/* Main Container */
-.about-container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-/* About Section */
-.about h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #007BFF;
-}
-
-.about p {
-    text-align: center;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-/* Team Section */
-.team {
-    margin-top: 40px;
-    text-align: center;
-}
-
-.team h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #007BFF;
-}
-
-/* Team Members Grid */
-.team-members {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-/* Individual Team Member */
-.team-member {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 250px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.team-member:hover {
-    transform: scale(1.05);
-}
-
-.team-member img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-
-/* Make Team Member Links Black */
-.team-member h3 a {
-    color: black; /* Sets text color to black */
-    text-decoration: none; /* Removes underline */
-    transition: color 0.3s ease-in-out;
-}
-
-.team-member h3 a:hover {
-    color: #555; /* Dark gray on hover for subtle effect */
-}
-
-
-{%endblock%}
+{% block head %}
+    <script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
 
 {% block body %}
-
 {% load static %}
 
-    <h2>About Us</h2>
-    <main class="about-container">
-        <section class="about">
-            <h2>About My Blog</h2>
-            <p>Welcome to My Blog, your go-to platform for insightful articles, inspiring stories, and in-depth discussions.</p>
-        </section>
-    
-        <section class="team">
-            <h2>Meet the Team</h2>
-            <div class="team-members">
-                <div class="team-member">
-                    <img src="{% static 'blog/images/diddy.jpeg' %}" alt="John Doe">
-                    <h3><a href='https://www.youtube.com/watch?v=-BC7_Xb0z5s' target="_blank" rel="noopener noreferrer">Diddler</a></h3>
-                    <p>Founder & Writer</p>
-                </div>
-                <div class="team-member">
-                    <img src="{% static 'blog/images/kanye.jpeg' %}" alt="Jane Smith">
-                    <h3><a href='https://www.youtube.com/watch?v=GzlKja1ySzo' target="_blank" rel="noopener noreferrer">Kanye</a></h3>
-                    <p>Editor & Contributor</p>
-                </div>
+<main class="max-w-6xl mx-auto p-12 bg-gradient-to-br from-indigo-50 to-white shadow-xl rounded-3xl mt-12 border border-gray-200">
+    <!-- About Section -->
+    <section class="text-center mb-12">
+        <h2 class="text-6xl font-extrabold text-indigo-700 mb-6">Who We Are</h2>
+        <p class="text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">We are a creative and driven team committed to delivering insightful articles, thought-provoking discussions, and valuable knowledge across various topics.</p>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center border border-gray-200">
+            <h3 class="text-2xl font-bold text-indigo-700 mb-4">Our Mission</h3>
+            <p class="text-gray-600">To inspire and educate by crafting well-researched and compelling content that sparks curiosity and growth.</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center border border-gray-200">
+            <h3 class="text-2xl font-bold text-indigo-700 mb-4">Our Vision</h3>
+            <p class="text-gray-600">Building a vibrant community of thinkers, writers, and innovators who shape the future of digital storytelling.</p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="text-center">
+        <h2 class="text-5xl font-bold text-indigo-700 mb-12">Meet Our Team</h2>
+        <div class="flex flex-wrap justify-center gap-12">
+            <!-- Team Member 1 -->
+            <div class="bg-white p-8 rounded-xl shadow-xl transform transition duration-300 hover:scale-105 border border-gray-300 text-center w-80">
+                <img src="{% static 'blog/images/diddy.jpeg' %}" alt="Diddler" class="w-28 h-28 rounded-full mx-auto mb-6 object-cover border-4 border-indigo-500">
+                <h3 class="text-2xl font-semibold">
+                    <a href="https://www.youtube.com/watch?v=-BC7_Xb0z5s" target="_blank" rel="noopener noreferrer" class="text-gray-900 hover:text-indigo-600 transition">Diddler</a>
+                </h3>
+                <p class="text-gray-600">Founder & Writer</p>
             </div>
-        </section>
-    </main>
-    {%endblock%}
+            
+            <!-- Team Member 2 -->
+            <div class="bg-white p-8 rounded-xl shadow-xl transform transition duration-300 hover:scale-105 border border-gray-300 text-center w-80">
+                <img src="{% static 'blog/images/kanye.jpeg' %}" alt="Kanye" class="w-28 h-28 rounded-full mx-auto mb-6 object-cover border-4 border-indigo-500">
+                <h3 class="text-2xl font-semibold">
+                    <a href="https://www.youtube.com/watch?v=GzlKja1ySzo" target="_blank" rel="noopener noreferrer" class="text-gray-900 hover:text-indigo-600 transition">Kanye</a>
+                </h3>
+                <p class="text-gray-600">Editor & Contributor</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

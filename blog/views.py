@@ -33,5 +33,14 @@ def about(request):
 
 def search(request):
     query = request.GET.get('query', '').strip()
-    posts=BlogPost.objects.filter(title__icontains=query)
-    return render(request, 'blog/search.html',{'results':posts})
+    if not query:
+        return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if no query provided
+    elif len(query)>80:
+        #messages.error(request, "Search query is too long.")
+        posts=BlogPost.objects.none()
+    else:
+        postsTitle=BlogPost.objects.filter(title__icontains=query)
+        postBlog=BlogPost.objects.filter(content__icontains=query)
+        posts=postsTitle.union(postBlog)
+
+    return render(request, 'blog/search.html',{'results':posts,'query':query})
