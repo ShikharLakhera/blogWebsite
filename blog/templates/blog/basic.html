@@ -4,14 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Blog{% endblock %}</title>
+    <!-- tinymce cdn -->
+    <link rel="stylesheet" href="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/skins/ui/oxide/content.min.css">
+
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <link rel="icon" type="image/x-icon" href="{% static 'blogWebsite/fav.ico' %}">
+    <!-- to remove the inherit styling from tinymce content -->
+    <style>
+        #blog-content *{
+            all: revert;
+            font-size: revert; 
+            font-weight: revert; 
+            line-height: revert;
+            color: revert;
+        }
+    </style>
 
-    {% block head %}
-    {% endblock %}
+    {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 font-poppins min-h-screen flex flex-col">
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
     <!-- Navbar -->
     <header class="bg-gray-900 text-white fixed top-0 left-0 w-full shadow-lg z-50">
@@ -19,7 +33,7 @@
             
             <!-- Logo -->
             <div class="text-xl font-semibold uppercase">
-                <a href="{% url 'blog:home' %}" class="hover:text-yellow-400 transition">My Blog</a>
+                <a href="{% url 'blog:home' %}" class="hover:text-yellow-400 transition" >My Blog</a>
             </div>
 
             <!-- Navigation Links -->
@@ -43,21 +57,35 @@
                 </form>
             </div>
 
-            <!-- Auth Buttons -->
-            <div class="space-x-4">
-                <a href="{% url 'blog:signup' %}" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Sign Up</a>
-                <a href="{% url 'blog:login' %}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</a>
+            <!-- Auth & Profile Buttons -->
+            <div class="space-x-4 flex items-center">
+                {% if user.is_authenticated %}
+                    <!-- Profile Button -->
+                    <a href="{% url 'blog:profile' user.username %}" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+                        Profile
+                    </a>
+
+                    <!-- Logout Button
+                    <form action="{% url 'blog:logout' %}" method="POST" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                            Logout
+                        </button>
+                    </form> -->
+                {% else %}
+                    <a href="{% url 'blog:signup' %}" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Sign Up</a>
+                    <a href="{% url 'blog:login' %}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</a>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <!-- Main Content Wrapper (Flex-1 to push footer down) -->
+    <!-- Main Content Wrapper -->
     <div class="flex-1 mt-20 px-4 py-10">
-        {% block body %}
-        {% endblock %}
+        {% block body %}{% endblock %}
     </div>
 
-    <!-- Footer (Stays at Bottom) -->
+    <!-- Footer -->
     <footer class="bg-gray-900 text-white text-center py-4">
         <p>&copy; 2025 My Blog. All Rights Reserved.</p>
     </footer>

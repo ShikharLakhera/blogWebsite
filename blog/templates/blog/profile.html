@@ -1,0 +1,84 @@
+{% extends 'blog/basic.html' %}
+
+{% block title %}{{ profile.user.username }}'s Profile{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
+    <!-- Profile Picture -->
+    <div class="text-center">
+        <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="w-32 h-32 mx-auto rounded-full border">
+    </div>
+
+    <!-- User Info -->
+    <div class="text-center mt-4">
+        <h2 class="text-2xl font-semibold">{{ profile.user.username }}</h2>
+        <p class="text-gray-600">@{{ profile.user.username }}</p>
+        <p class="text-gray-500 mt-2"><strong>Email:</strong> {{ profile.user.email }}</p>
+
+        <!-- Editable Bio -->
+        {% if request_user == profile.user %}
+            <div id="bio-section">
+                <p class="text-gray-500"><strong>Bio:</strong> <span id="bio-text">{{ profile.bio }}</span></p>
+                <textarea id="bio-input" class="w-full p-2 border rounded-md hidden">{{ profile.bio }}</textarea>
+                <button id="edit-bio-btn" class="mt-2 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Edit Bio</button>
+                <button id="save-bio-btn" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 hidden">Save</button>
+            </div>
+        {% else %}
+            <p class="text-gray-500"><strong>Bio:</strong> {{ profile.bio }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Logout Button -->
+    {% if request_user == profile.user %}
+    <div class="mt-6 text-center">
+        <form action="{% url 'blog:logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Logout</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<!-- JavaScript for AJAX Request -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const editBtn = document.getElementById("edit-bio-btn");
+        const saveBtn = document.getElementById("save-bio-btn");
+        const bioText = document.getElementById("bio-text");
+        const bioInput = document.getElementById("bio-input");
+
+        editBtn.addEventListener("click", function() {
+            bioText.classList.add("hidden");
+            bioInput.classList.remove("hidden");
+            editBtn.classList.add("hidden");
+            saveBtn.classList.remove("hidden");
+        });
+
+        saveBtn.addEventListener("click", function() {
+            const newBio = bioInput.value;
+
+            fetch("{% url 'blog:editBio' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ bio: newBio })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    bioText.textContent = newBio;
+                    bioText.classList.remove("hidden");
+                    bioInput.classList.add("hidden");
+                    editBtn.classList.remove("hidden");
+                    saveBtn.classList.add("hidden");
+                } else {
+                    alert("Error updating bio!");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

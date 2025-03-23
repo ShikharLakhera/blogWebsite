@@ -1,13 +1,15 @@
-from django.shortcuts import render
+import json
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.shortcuts import HttpResponse , redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .forms import ContactForm
-from .models import Contact
+from .models import Contact , Profile
 from blogHome.models import BlogPost
 from django.views import View
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate , login
+from django.contrib.auth import authenticate , login ,logout
 
 # Create your views here.
 
@@ -53,34 +55,38 @@ class handleSignup(View):
         return render(request, 'blog/signup.html')
     
     def post(self, request):
-        fname=request.POST.get('first_name')
-        lname=request.POST.get('last_name')
+        # fname=request.POST.get('first_name')
+        # lname=request.POST.get('last_name')
+        uname=request.POST.get('username')
         email=request.POST.get('email')
         password1=request.POST.get('password1')
         password2=request.POST.get('password2')
         if(password1!=password2):
             messages.error(request, 'Passwords do not match')
             return render(request, "signup.html", {
-                "first": fname,
-                "last": lname,
+                "username": uname,
                 "email": email
             })
-        elif ( User.objects.filter(username=email).exists()):
+        elif ( User.objects.filter(username=uname).exists()):
+            messages.error(request, 'Username already in use .')
+            return render(request, "blog/signup.html", {
+                "username": uname,
+                "email": email
+            })
+        elif(User.objects.filter(email=email).exists()):
             messages.error(request, 'email already in use .')
-            return render(request, "signup.html", {
-                "first": fname,
-                "last": lname,
+            return render(request, "blog/signup.html", {
+                "username": uname,
                 "email": email
             })
         else :
-            myuser=User.objects.create_user(username=email,email=email,password=password1)
-            myuser.first_name=fname
-            myuser.last_name=lname
+            myuser=User.objects.create_user(username=uname,email=email,password=password1)
+            Profile.objects.create(user=myuser)
+            #myprofile.save()
             myuser.save()
             messages.success(request, 'User created successfully')
-            return redirect(reverse_lazy('blog:signup'))  # Redirect to homepage if user created successfully
+            return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user created successfully
 
-        return render(request, 'blog/indexpage/index.html')
 
 class loginhandle(View):
     def get(self,request):
@@ -88,9 +94,9 @@ class loginhandle(View):
     
     def post(self,request):
 
-        email=request.POST.get('email')
+        uname=request.POST.get('username')
         password=request.POST.get('password')
-        user=authenticate(username=email,password=password)
+        user=authenticate(username=uname,password=password)
 
         if user is not None:
             login(request,user)
@@ -98,4 +104,47 @@ class loginhandle(View):
             return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user logged in successfully
         else:
             messages.error(request, 'Invalid email or password.')
-            return render(request, "blog/login.html",{'email': email})
+            return render(request, "blog/login.html",{'email': uname})
+        
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, 'You have been logged out')
+    return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user logged out successfully
+
+class profileView(View):
+    def get(self, request, username):
+        # Debugging print statements
+        print(f"Looking for user with username: {username}")
+        userobj=User.objects.filter(username=username).first()
+        #userobj = get_object_or_404(User, username=username)
+        print(f"Found user: {userobj}")  # Check if user exists
+
+        profile=Profile.objects.filter(user=userobj).first()
+        #profile = get_object_or_404(Profile, user=userobj)
+        print(f"Found profile: {profile}") 
+         # Check if profile exists
+        print(f"this is user :{request.user}")
+        print(f"Authentication:{request.user.is_authenticated}")
+
+        return render(request, 'blog/profile.html', {'profile': profile,'request_user': userobj})
+
+class editBio(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            new_bio = data.get("bio", "").strip()
+            
+            if len(new_bio) > 200:
+                return JsonResponse({"status": "error", "message": "Bio too long (max 200 characters)."})
+            
+            request.user.profile.bio = new_bio
+            request.user.profile.save()
+            
+            return JsonResponse({"status": "success", "bio": new_bio})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+
+        return JsonResponse({"status": "error", "message": "Invalid request method."})
+

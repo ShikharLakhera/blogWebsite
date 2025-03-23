@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -118,15 +119,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'  
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Needed for production
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),  # Ensure global static folder is recognized
+    os.path.join(BASE_DIR, "blogWebsite/static"),  # Include this line
 ]
 
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),  # Ensure global static folder is recognized
+# ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# tinymce settings
+# TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/crh51fey46wn5lj4r6rf9p8dns3azlvazfwl5cm1eyofas50/tinymce/7/tinymce.min.js'
+# TINYMCE_COMPRESSOR = False
+CSP_DEFAULT_SRC = ("'self'", "https://cdn.tiny.cloud")
+CSP_SCRIPT_SRC = ("'self'", "https://cdn.tiny.cloud", "'unsafe-inline'", "'unsafe-eval'")

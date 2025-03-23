@@ -11,5 +11,8 @@ urlpatterns=[
     path('about/', views.about,name='about'),
     path('search/', views.search,name='search'),
     path('signup/', views.handleSignup.as_view(),name='signup'),
-    path('login/', views.loginhandle.as_view(),name='login')
+    path('login/', views.loginhandle.as_view(),name='login'),
+    path('logout/',views.logout_view,name='logout'),
+    path('profile/<str:username>/', views.profileView.as_view(),name='profile'),
+    path('bioedit/', views.editBio.as_view(),name='editBio'),
 ]
