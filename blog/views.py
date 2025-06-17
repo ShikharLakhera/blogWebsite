@@ -9,7 +9,9 @@ from .models import Contact , Profile
 from blogHome.models import BlogPost
 from django.views import View
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate , login ,logout
+from django.contrib.auth import authenticate , login ,logout 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -63,7 +65,7 @@ class handleSignup(View):
         password2=request.POST.get('password2')
         if(password1!=password2):
             messages.error(request, 'Passwords do not match')
-            return render(request, "signup.html", {
+            return render(request, "blog/signup.html", {
                 "username": uname,
                 "email": email
             })
@@ -100,7 +102,6 @@ class loginhandle(View):
 
         if user is not None:
             login(request,user)
-            messages.success(request, 'You are now logged in')
             return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user logged in successfully
         else:
             messages.error(request, 'Invalid email or password.')
@@ -111,7 +112,7 @@ def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
         messages.success(request, 'You have been logged out')
-    return redirect(reverse_lazy('blog:home'))  # Redirect to homepage if user logged out successfully
+    return redirect(reverse_lazy('blog:login'))  # Redirect to homepage if user logged out successfully
 
 class profileView(View):
     def get(self, request, username):
@@ -124,11 +125,9 @@ class profileView(View):
         profile=Profile.objects.filter(user=userobj).first()
         #profile = get_object_or_404(Profile, user=userobj)
         print(f"Found profile: {profile}") 
-         # Check if profile exists
-        print(f"this is user :{request.user}")
-        print(f"Authentication:{request.user.is_authenticated}")
+        blogs=BlogPost.objects.all().filter(author=userobj).order_by('-timeStamp')[:5]
 
-        return render(request, 'blog/profile.html', {'profile': profile,'request_user': userobj})
+        return render(request, 'blog/profile.html', {'profile': profile,'request_user': userobj ,'blogs':blogs})
 
 class editBio(View):
     def post(self, request):
@@ -147,4 +146,34 @@ class editBio(View):
             return JsonResponse({"status": "error", "message": str(e)})
 
         return JsonResponse({"status": "error", "message": "Invalid request method."})
+class viewAuthorProfile(View):
+    def get(self,request,author):
+        #author_obj=User.objects.filter(username=author)
+        author_obj=get_object_or_404(User,username=author)
+        blogs=BlogPost.objects.all().filter(author=author_obj).order_by('-timeStamp')[:5]
+        ctx={'author':author_obj,'blogs':blogs}
+        #return HttpResponse("Working")
+        return render(request,'blog/authorProfile.html',ctx)
+    
+#creating blog with the help of api endpoint    
 
+from .forms import CreateBlog
+
+@method_decorator(login_required,name="dispatch")
+class postBlog(View):
+    def get(self, request):
+        return render(request, 'blog/postingblog.html')
+
+    
+    def post(self, request):
+        created_title = request.POST.get('title')
+        created_content = request.POST.get('content')
+        created_form = CreateBlog(request.POST)
+        
+        if created_form.is_valid():
+            created_form.save()
+            messages.success(request, 'Blog is posted')
+            return redirect('blog:postBlog') 
+        else:
+            messages.error(request, "fill in data correctly!!")
+            return render(request, 'blog/postingblog.html', {'form': created_form})

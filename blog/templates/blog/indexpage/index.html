@@ -6,7 +6,7 @@
 <!-- Hero Section -->
 <div class="relative w-full h-[50vh] bg-cover bg-center flex items-center justify-center text-white text-center"
     style="background-image: url('https://source.unsplash.com/1600x900/?technology,writing');">
-    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="absolute bg-black bg-opacity-60" style="top: -58px; right: -16px; bottom: -34px; left: -16px;"></div>
     <div class="relative z-10 max-w-2xl">
         <h1 class="text-3xl font-bold mb-3">Welcome to My Blog</h1>
         <p class="text-lg mb-4">Explore insightful articles and amazing stories</p>
@@ -30,7 +30,7 @@
         <div class="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-2">
             <h4 class="text-xl font-bold text-blue-600">{{ post.title }}</h4>
             <p class="text-sm text-gray-500">By {{ post.author }} | {{ post.timeStamp|date:"M d, Y" }}</p>
-            <p class="text-gray-700 mt-3">{{ post.content|truncatewords:20|safe }}</p>
+            {% comment %} <p class="text-gray-700 mt-3">{{ post.content|truncatewords:20|safe }}</p> {% endcomment %}
             <a href="{% url 'blogHome:blogPage' post.slug %}" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Read More</a>
         </div>
         {% empty %}

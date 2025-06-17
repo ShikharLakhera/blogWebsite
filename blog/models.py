@@ -16,7 +16,7 @@ class Contact(models.Model):
 class Profile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     bio=models.CharField(max_length=200 , null=True,blank=True)
-    profile_pic=models.ImageField(upload_to='profile_pic/', default='/home/shikhar/django_projects/blogWebsite/blog/static/blog/images/defpic.png')
+    profile_pic=models.ImageField(upload_to='profile_pic/', default='profile_pic/defpic.png',)
 
     def __str__(self):
         return self.user.username

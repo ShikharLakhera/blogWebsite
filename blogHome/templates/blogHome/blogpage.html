@@ -21,7 +21,7 @@
 <div class="max-w-3xl mx-auto mt-12 p-6 bg-white shadow-lg rounded-lg">
     <!-- Blog Title and Metadata -->
     <h2 class="text-center text-2xl font-bold text-blue-600">{{ blog.title }}</h2>
-    <p class="text-center text-gray-500 text-sm mt-2">Author: {{ blog.author }} | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
+    <p class="text-center text-gray-500 text-sm mt-2"><a href="{% url 'blog:viewAuthor' author=blog.author %}">Author: {{ blog.author }}</a> | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
 
     <!-- Blog Content -->
     <div id="blog-content" class=" text-gray-700 mt-4 leading-relaxed">

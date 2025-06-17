@@ -12,8 +12,8 @@
             <h3 class="text-xl font-semibold text-gray-800">
                 <a href="{% url 'blogHome:blogPage' blog.slug %}" class="hover:underline text-blue-500">{{ blog.title }}</a>
             </h3>
-            <p class="text-sm text-gray-500">Author: {{ blog.author }} | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
-            <p class="text-gray-700 mt-2">{{ blog.content|truncatewords:30|safe }}</p>
+            <p class="text-sm text-gray-500"><a href="{% url 'blog:viewAuthor' author=blog.author %}">Author: {{ blog.author }}</a> | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
+            <p class="blog-content text-gray-700 mt-2">{{ blog.content|truncatewords:5 }}</p>
             <a href="{% url 'blogHome:blogPage' blog.slug %}" class="inline-block mt-2 px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-700">Read More</a>
         </div>
     {% empty %}

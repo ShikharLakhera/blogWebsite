@@ -15,4 +15,6 @@ urlpatterns=[
     path('logout/',views.logout_view,name='logout'),
     path('profile/<str:username>/', views.profileView.as_view(),name='profile'),
     path('bioedit/', views.editBio.as_view(),name='editBio'),
+    path('usrprofile/<str:author>',views.viewAuthorProfile.as_view(),name='viewAuthor'),
+    path('postBlog/',views.postBlog.as_view(),name='postBlog'),
 ]

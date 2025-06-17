@@ -18,13 +18,33 @@
         <!-- Editable Bio -->
         {% if request_user == profile.user %}
             <div id="bio-section">
-                <p class="text-gray-500"><strong>Bio:</strong> <span id="bio-text">{{ profile.bio }}</span></p>
+                <p class="text-gray-500"><strong>Bio:</strong><span id="bio-text">{{ profile.bio }}</span></p>
                 <textarea id="bio-input" class="w-full p-2 border rounded-md hidden">{{ profile.bio }}</textarea>
                 <button id="edit-bio-btn" class="mt-2 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Edit Bio</button>
                 <button id="save-bio-btn" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 hidden">Save</button>
             </div>
         {% else %}
             <p class="text-gray-500"><strong>Bio:</strong> {{ profile.bio }}</p>
+        {% endif %}
+    </div>
+     <!-- Blog List -->
+     <div class="mt-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Posts</h3>
+    
+        {% if blogs %}
+            <ul class="space-y-4">
+                {% for blog in blogs %}
+                    <li class="border rounded p-4 bg-white shadow-sm transform transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-gray-50">
+                        <a href="{% url 'blogHome:blogPage' slug=blog.slug %}" class="text-lg font-semibold text-blue-600 hover:underline">
+                            {{ blog.title }}
+                        </a>
+                        <p class="text-sm text-gray-500 mt-1">Published on {{ blog.timeStamp|date:"F j, Y" }}</p>
+                        <p class="text-gray-700 mt-2">{{ blog.content|truncatewords:25 }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">You have not posted any blogs yet.</p>
         {% endif %}
     </div>
 

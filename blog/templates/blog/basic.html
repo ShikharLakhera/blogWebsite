@@ -7,9 +7,8 @@
     <!-- tinymce cdn -->
     <link rel="stylesheet" href="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/skins/ui/oxide/content.min.css">
 
+    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     {% load static %}
     <link rel="icon" type="image/x-icon" href="{% static 'blogWebsite/fav.ico' %}">
     <!-- to remove the inherit styling from tinymce content -->
@@ -21,23 +20,115 @@
             line-height: revert;
             color: revert;
         }
+        
+        /* Sidebar toggle styles */
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 
     {% block head %}{% endblock %}
 </head>
 <body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <header class="bg-gray-900 text-white fixed top-0 left-0 w-full shadow-lg z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            
-            <!-- Logo -->
-            <div class="text-xl font-semibold uppercase">
-                <a href="{% url 'blog:home' %}" class="hover:text-yellow-400 transition" >My Blog</a>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay fixed inset-0 bg-black bg-opacity-50 z-40" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-50 shadow-lg" id="sidebar">
+        <div class="p-6">
+            <!-- Sidebar Header -->
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-semibold">Menu</h2>
+                <button id="closeSidebar" class="text-gray-400 hover:text-white text-2xl">
+                    ×
+                </button>
             </div>
 
             <!-- Navigation Links -->
-            <nav>
+            <nav class="mb-8">
+                <ul class="space-y-4">
+                    <li><a href="{% url 'blog:home' %}" class="block py-2 px-4 rounded hover:bg-gray-700 transition">Home</a></li>
+                    <li><a href="{% url 'blogHome:blogHome' %}" class="block py-2 px-4 rounded hover:bg-gray-700 transition">Blog</a></li>
+                    <li><a href="{% url 'blog:about' %}" class="block py-2 px-4 rounded hover:bg-gray-700 transition">About</a></li>
+                    <li><a href="{% url 'blog:contact' %}" class="block py-2 px-4 rounded hover:bg-gray-700 transition">Contact</a></li>
+                </ul>
+            </nav>
+
+            <!-- Auth Section -->
+            <div class="border-t border-gray-600 pt-6">
+                {% if user.is_authenticated %}
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-300 mb-2">Welcome, {{ user.username }}!</p>
+                        <a href="{% url 'blog:profile' user.username %}" class="block w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition text-center mb-3">
+                            View Profile
+                        </a>
+                        
+                        <a href="{% url 'blog:postBlog' %}" class="block w-full py-2 px-4 bg-yellow-500 text-black rounded-md hover:bg-yellow-600 transition text-center mb-3">
+                            ➕ Post Blog
+                        </a>
+                        
+                        <!-- Uncomment if you want logout in sidebar
+                        <form action="{% url 'blog:logout' %}" method="POST" class="w-full">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                                Logout
+                            </button>
+                        </form>
+                        -->
+                    </div>
+                {% else %}
+                    <div class="space-y-3">
+                        <a href="{% url 'blog:signup' %}" class="block w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-center">
+                            Sign Up
+                        </a>
+                        <a href="{% url 'blog:login' %}" class="block w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-center">
+                            Login
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <header class="bg-gray-900 text-white fixed top-0 left-0 w-full shadow-lg z-30">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            
+            <!-- Left side: Hamburger Menu + Logo -->
+            <div class="flex items-center space-x-4">
+                <!-- Hamburger Menu Button -->
+                <button id="openSidebar" class="text-white hover:text-yellow-400 text-2xl">
+                    ☰
+                </button>
+                
+                <!-- Logo -->
+                <div class="text-xl font-semibold uppercase">
+                    <a href="{% url 'blog:home' %}" class="hover:text-yellow-400 transition flex items-center space-x-2">
+                        <img src="{% static 'blog/logo.png' %}" alt="Logo" class="h-8 w-8 object-cover rounded-full">
+                        <span>My Blog</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Center: Navigation Links (Desktop) -->
+            <nav class="hidden md:block">
                 <ul class="flex space-x-6">
                     <li><a href="{% url 'blog:home' %}" class="hover:text-yellow-400">Home</a></li>
                     <li><a href="{% url 'blogHome:blogHome' %}" class="hover:text-yellow-400">Blog</a></li>
@@ -46,35 +137,24 @@
                 </ul>
             </nav>
 
-            <!-- Search Bar -->
-            <div class="relative">
-                <form action="{% url 'blog:search' %}" method="GET">
-                    <input type="text" name="query" placeholder="Search..."
-                        class="px-3 py-1 rounded-md border border-gray-300 text-black focus:outline-none focus:ring focus:ring-yellow-300">
-                    <button type="submit" class="ml-2 px-3 py-1 bg-yellow-400 text-black rounded-md hover:bg-yellow-500">
-                        🔍
-                    </button>
-                </form>
-            </div>
-
-            <!-- Auth & Profile Buttons -->
-            <div class="space-x-4 flex items-center">
-                {% if user.is_authenticated %}
-                    <!-- Profile Button -->
-                    <a href="{% url 'blog:profile' user.username %}" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
-                        Profile
-                    </a>
-
-                    <!-- Logout Button
-                    <form action="{% url 'blog:logout' %}" method="POST" class="inline">
-                        {% csrf_token %}
-                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-                            Logout
+            <!-- Right side: Search Bar + User Info -->
+            <div class="flex items-center space-x-4">
+                <!-- Search Bar -->
+                <div class="relative">
+                    <form action="{% url 'blog:search' %}" method="GET" class="flex">
+                        <input type="text" name="query" placeholder="Search..."
+                            class="px-3 py-1 rounded-l-md border border-gray-300 text-black focus:outline-none focus:ring focus:ring-yellow-300 text-sm">
+                        <button type="submit" class="px-3 py-1 bg-yellow-400 text-black rounded-r-md hover:bg-yellow-500 text-sm">
+                            🔍
                         </button>
-                    </form> -->
-                {% else %}
-                    <a href="{% url 'blog:signup' %}" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Sign Up</a>
-                    <a href="{% url 'blog:login' %}" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</a>
+                    </form>
+                </div>
+
+                <!-- User Info (Desktop only) -->
+                {% if user.is_authenticated %}
+                    <div class="hidden md:block">
+                        <span class="text-sm text-gray-300">Hello, {{ user.username }}</span>
+                    </div>
                 {% endif %}
             </div>
         </div>
@@ -89,6 +169,37 @@
     <footer class="bg-gray-900 text-white text-center py-4">
         <p>&copy; 2025 My Blog. All Rights Reserved.</p>
     </footer>
+
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const openSidebarBtn = document.getElementById('openSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        openSidebarBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+    </script>
 
 </body>
 </html>

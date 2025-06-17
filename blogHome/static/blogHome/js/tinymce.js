@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     var script = document.createElement("script");
-    script.src = "https://cdn.tiny.cloud/1/no-api-key/tinymce/6/skins/ui/oxide/content.min.css";
+    script.src = "https://cdn.tiny.cloud/1/crh51fey46wn5lj4r6rf9p8dns3azlvazfwl5cm1eyofas50/tinymce/6/tinymce.min.js";
     script.referrerpolicy = "origin";
     script.onload = function () {
         tinymce.init({
             selector: '#id_content',  // Target the Django admin textarea
             height: 400,  // Set desired height
             menubar: true,
+            iframe: true,
             valid_elements: '*[*]', // Allow all HTML elements  
             plugins: [
                 // Core editing features

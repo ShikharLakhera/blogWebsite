@@ -1,7 +1,7 @@
 import bleach
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils.text import slugify
 
 # ALLOWED_TAGS = [
 #     'p', 'br', 'b', 'i', 'u', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre',
@@ -21,10 +21,21 @@ class BlogPost(models.Model):
     sno=models.AutoField(primary_key=True)
     content=models.TextField()
     title=models.CharField(max_length=255)
-    author=models.CharField(max_length=25)
+    author=models.ForeignKey(User, blank=True, null=True,on_delete=models.CASCADE)
     timeStamp=models.DateTimeField(blank=True,auto_now_add=True)
-    slug=models.CharField(max_length=200)
+    slug=models.CharField(max_length=200,unique=True,blank=False,null=False)
     
+    def save(self, *args, **kwargs):
+        # Generate slug if it doesn't exist
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while BlogPost.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.title
     

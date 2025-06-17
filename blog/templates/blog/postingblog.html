@@ -1,0 +1,102 @@
+{% extends 'blog/basic.html' %}
+
+{% block title %}Upload Blog{% endblock %}
+
+{% block head %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var script = document.createElement("script");
+        script.src = "https://cdn.tiny.cloud/1/crh51fey46wn5lj4r6rf9p8dns3azlvazfwl5cm1eyofas50/tinymce/6/tinymce.min.js";
+        script.referrerPolicy = "origin";
+        script.onload = function () {
+            tinymce.init({
+                selector: '#id_content',
+                height: 400,
+                menubar: true,
+                iframe: true,
+                valid_elements: '*[*]',
+                plugins: [
+                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
+                    'searchreplace', 'table', 'visualblocks', 'wordcount',
+                ],
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code',
+                branding: false,
+                image_advtab: true,
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.onchange = function () {
+                        var file = this.files[0];
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            cb(reader.result, { title: file.name });
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                }
+            });
+        };
+        document.head.appendChild(script);
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-8 mt-10">
+
+    {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+                <div class="px-4 py-3 rounded relative mb-4 
+                    {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300
+                    {% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-300
+                    {% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800 border border-yellow-300
+                    {% else %}bg-gray-100 text-gray-800 border border-gray-300{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Upload a New Blog Post</h2>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 text-red-800 border border-red-300 px-4 py-2 rounded mb-4">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div>
+            <label for="id_title" class="block text-sm font-medium text-gray-700">Title</label>
+            <input type="text" name="title" id="id_title"
+                   value="{{ form.title.value|default_if_none:'' }}"
+                   class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-blue-500 focus:ring-blue-500"
+                   autofocus>
+            {{ form.title.errors }}
+        </div>
+
+        <div>
+            <label for="id_content" class="block text-sm font-medium text-gray-700">Content</label>
+            <textarea name="content" id="id_content" rows="10"
+                      class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-blue-500 focus:ring-blue-500">{{ form.content.value|default_if_none:'' }}</textarea>
+            {{ form.content.errors }}
+        </div>
+
+        <div>
+            <button type="submit"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+                Publish Blog
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

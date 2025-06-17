@@ -1,0 +1,48 @@
+{% extends 'blog/basic.html' %}
+
+{% block title %}{{ author.username }}'s Profile{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 mt-10">
+
+    <!-- Profile Header -->
+    <div class="flex items-center space-x-6">
+        <img src="{{ author.profile.profile_pic.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full object-cover shadow">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">{{ author.username }}</h2>
+            <p class="text-gray-600">{{ author.email }}</p>
+        </div>
+    </div>
+
+    <!-- Bio Section -->
+    <div class="mt-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Bio</h3>
+        <p class="text-gray-700">
+            {{ author.profile.bio|default:"This user has not added a bio yet." }}
+        </p>
+    </div>
+
+    <!-- Blog List -->
+    <div class="mt-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Recent Posts by {{ author.username }}</h3>
+    
+        {% if blogs %}
+            <ul class="space-y-4">
+                {% for blog in blogs %}
+                    <li class="border rounded p-4 bg-white shadow-sm transform transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-gray-50">
+                        <a href="{% url 'blogHome:blogPage' slug=blog.slug %}" class="text-lg font-semibold text-blue-600 hover:underline">
+                            {{ blog.title }}
+                        </a>
+                        <p class="text-sm text-gray-500 mt-1">Published on {{ blog.timeStamp|date:"F j, Y" }}</p>
+                        <p class="text-gray-700 mt-2">{{ blog.content|truncatewords:25 }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">This author has not posted any blogs yet.</p>
+        {% endif %}
+    </div>
+    
+
+</div>
+{% endblock %}
