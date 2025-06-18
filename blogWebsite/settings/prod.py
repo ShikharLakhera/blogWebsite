@@ -10,12 +10,16 @@ DEBUG = False
 ALLOWED_HOSTS = ['your-app-name.onrender.com']
 
 # PostgreSQL via DATABASE_URL from Render
+DATABASE_URL='postgresql://blog_db_5m1f_user:qG3RLAzODoRjB2obuqdvIeKmvkFSkluY@dpg-d19iudjipnbc73emqtf0-a.oregon-postgres.render.com/blog_db_5m1f'
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': dj_database_url.config(
+        default=os.environ.get(DATABASE_URL)
+    )
 }
 
 # Whitenoise setup for serving static files in production
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
 
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
