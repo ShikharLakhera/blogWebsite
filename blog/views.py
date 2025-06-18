@@ -166,12 +166,12 @@ class postBlog(View):
 
     
     def post(self, request):
-        created_title = request.POST.get('title')
-        created_content = request.POST.get('content')
         created_form = CreateBlog(request.POST)
-        
+    
         if created_form.is_valid():
-            created_form.save()
+            blog = created_form.save(commit=False)  # Don't save to DB yet
+            blog.author = request.user  # Set the current user as author
+            blog.save()  # Now save with author
             messages.success(request, 'Blog is posted')
             return redirect('blog:postBlog') 
         else:
