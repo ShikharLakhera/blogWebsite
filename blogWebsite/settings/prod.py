@@ -7,7 +7,8 @@ import os
 DEBUG = False
 
 # ⚠️ Update this with your Render domain after deployment (or use '*', but it's not secure)
-ALLOWED_HOSTS = ['your-app-name.onrender.com']
+ALLOWED_HOSTS = ['blogwebsite-b7xr.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://blogwebsite-b7xr.onrender.com']
 
 # PostgreSQL via DATABASE_URL from Render
 DATABASE_URL='postgresql://blog_db_5m1f_user:qG3RLAzODoRjB2obuqdvIeKmvkFSkluY@dpg-d19iudjipnbc73emqtf0-a.oregon-postgres.render.com/blog_db_5m1f'
