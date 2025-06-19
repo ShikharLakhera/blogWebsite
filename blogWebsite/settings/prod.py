@@ -35,6 +35,3 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')  # fallback is 
 
 # Optional: allow Render health checks
 # if using `/healthz` or similar endpoints, add them to ALLOWED_HOSTS or middleware exclusions
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
