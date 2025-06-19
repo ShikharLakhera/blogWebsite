@@ -24,7 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('blog.urls')),
     path('blogHome/',include('blogHome.urls')),
-    path('rajabanado/',views.create_superuser)
 ]
 
 if settings.DEBUG:  # Serve media files during development
