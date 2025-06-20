@@ -1,46 +1,41 @@
 {% extends 'blog/basic.html' %}
+{% load static %}
 
 {% block title %}Upload Blog{% endblock %}
 
 {% block head %}
+<script src="{% static 'blogHome/js/tinymce/tinymce.min.js' %}" referrerpolicy="origin"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var script = document.createElement("script");
-        script.src = "https://cdn.tiny.cloud/1/crh51fey46wn5lj4r6rf9p8dns3azlvazfwl5cm1eyofas50/tinymce/6/tinymce.min.js";
-        script.referrerPolicy = "origin";
-        script.onload = function () {
-            tinymce.init({
-                selector: '#id_content',
-                height: 400,
-                menubar: true,
-                iframe: true,
-                valid_elements: '*[*]',
-                plugins: [
-                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
-                    'searchreplace', 'table', 'visualblocks', 'wordcount',
-                ],
-                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code',
-                branding: false,
-                image_advtab: true,
-                automatic_uploads: true,
-                file_picker_types: 'image',
-                file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'file');
-                    input.setAttribute('accept', 'image/*');
-                    input.onchange = function () {
-                        var file = this.files[0];
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            cb(reader.result, { title: file.name });
-                        };
-                        reader.readAsDataURL(file);
+        tinymce.init({
+            selector: '#id_content',
+            height: 400,
+            menubar: true,
+            valid_elements: '*[*]',
+            plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media',
+                'searchreplace', 'table', 'visualblocks', 'wordcount', 'fullscreen', 'preview'
+            ],
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code',
+            branding: false,
+            image_advtab: true,
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            file_picker_callback: function (cb, value, meta) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    var file = this.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        cb(reader.result, { title: file.name });
                     };
-                    input.click();
-                }
-            });
-        };
-        document.head.appendChild(script);
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        });
     });
 </script>
 {% endblock %}
