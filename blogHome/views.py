@@ -1,9 +1,12 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.shortcuts import HttpResponse , redirect
 from django.urls import reverse_lazy
+from django.views import View
 from .models import BlogPost , Comment
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
+from .forms import BlogForm
 # Create your views here.
 
 def blogHome(request):
@@ -50,3 +53,34 @@ def commentHandler(request, post_id):
 
     # Redirect to the blog page using the post's slug
     return redirect(reverse_lazy("blogHome:blogPage", args=[post.slug]))
+
+class editView(View):
+    def get(self,request,slug):
+        blog=get_object_or_404(BlogPost,slug=slug)
+        form=BlogForm(instance=blog)
+        print(blog.title)
+        print(form['title'].value)
+        print(blog)
+        if request.user != blog.author:
+            return HttpResponseForbidden()
+
+        return render(request,'blogHome/blogedit.html',{'title':blog.title,'content':blog.content,'blog':blog,'slug':blog.slug})
+    
+    def post(self,request,slug):
+        blog=get_object_or_404(BlogPost,slug=request.POST.get('slug'))
+        slug=blog.slug
+        blgfrm=BlogForm(request.POST,instance=blog)
+        
+        if request.user != blog.author:
+            return HttpResponseForbidden()
+        
+        if blgfrm.is_valid():
+            blgfrm.save()
+            return redirect(reverse_lazy('blogHome:blogPage',kwargs={'slug': blog.slug}))
+        
+        else:
+            inv_title=request.POST.get('title')
+            inv_content=request.POST.get('content')
+            print(inv_content)
+            print(inv_title)
+            return render(request,'blogHome/blogedit.html',{'title':inv_title,'content':inv_content,'blog':None,'slug':slug})

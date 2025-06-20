@@ -1,8 +1,10 @@
 {% extends "blog/basic.html" %}
+{% load static %}
+{% load humanize %}
 
 {% block title %}{{ blog.title }}{% endblock %}
 
-{%block head%}
+{% block head %}
 <style>
     #blog-content {
         all: revert;
@@ -15,18 +17,25 @@
 {% endblock %}
 
 {% block body %}
-
-{% load humanize %}
-
 <div class="max-w-3xl mx-auto mt-12 p-6 bg-white shadow-lg rounded-lg">
     <!-- Blog Title and Metadata -->
     <h2 class="text-center text-2xl font-bold text-blue-600">{{ blog.title }}</h2>
-    <p class="text-center text-gray-500 text-sm mt-2"><a href="{% url 'blog:viewAuthor' author=blog.author %}">Author: {{ blog.author }}</a> | Published on: {{ blog.timeStamp|date:"F d, Y" }}</p>
+    <p class="text-center text-gray-500 text-sm mt-2">
+        <a href="{% url 'blog:viewAuthor' author=blog.author %}">Author: {{ blog.author }}</a> |
+        Published on: {{ blog.timeStamp|date:"F d, Y" }}
+    </p>
 
     <!-- Blog Content -->
-    <div id="blog-content" class=" text-gray-700 mt-4 leading-relaxed">
+    <div id="blog-content" class="text-gray-700 mt-4 leading-relaxed">
         {{ blog.content|safe }}
     </div>
+
+    <!-- Edit Button (visible only to the blog author) -->
+    {% if request.user == blog.author %}
+        <a href="{% url 'blogHome:editView' slug=blog.slug %}" class="inline-block mt-6 px-4 py-2 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600 mr-2">
+            Edit Blog
+        </a>
+    {% endif %}
 
     <!-- Back to Home Button -->
     <a href="{% url 'blogHome:blogHome' %}" class="inline-block mt-6 px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-700">Back to Home</a>
@@ -36,7 +45,7 @@
 
     <!-- Comment Section -->
     <div class="mt-12">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Comments({{comments.count}})</h3>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Comments ({{ comments.count }})</h3>
 
         <!-- Comment Form -->
         {% if user.is_authenticated %}
@@ -53,11 +62,12 @@
         <!-- Display Existing Comments -->
         <div class="space-y-6 mt-6">
             {% for comment in comments %}
-                {% if comment.is_parent %}  <!-- Only display top-level comments -->
+                {% if comment.is_parent %}
                     <div class="p-4 bg-gray-50 rounded-lg" id="comment-{{ comment.sno }}">
                         <!-- Comment Content -->
                         <p class="text-gray-700">{{ comment.content }}</p>
                         <p class="text-sm text-gray-500 mt-2">By: {{ comment.user.username }} | {{ comment.timeStamp|naturaltime }}</p>
+
                         <!-- Reply Button -->
                         <button onclick="showReplyForm({{ comment.sno }})" class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300">Reply</button>
 
@@ -94,12 +104,10 @@
 <!-- JavaScript to Show/Hide Reply Form -->
 <script>
     function showReplyForm(commentSno) {
-        // Hide all other reply forms
         document.querySelectorAll('[id^="reply-form-"]').forEach(form => {
             form.classList.add('hidden');
         });
 
-        // Show the reply form for the clicked comment
         const replyForm = document.getElementById(`reply-form-${commentSno}`);
         replyForm.classList.remove('hidden');
     }
