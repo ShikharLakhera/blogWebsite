@@ -7,6 +7,7 @@ from .models import BlogPost , Comment
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 from .forms import BlogForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
 def blogHome(request):
@@ -56,7 +57,7 @@ def commentHandler(request, post_id):
 
 class editView(View):
     def get(self, request, slug):
-        print('get')
+        
         blog = get_object_or_404(BlogPost, slug=slug)
         
         if request.user != blog.author:
@@ -72,7 +73,7 @@ class editView(View):
         })
     
     def post(self, request, slug):
-        print('post')
+
         blog = get_object_or_404(BlogPost, slug=slug)
         
         if request.user != blog.author:
@@ -91,3 +92,15 @@ class editView(View):
                 'slug': blog.slug,
                 'sno': blog.sno
             })
+
+from django.http import JsonResponse
+
+class deleteBlog(LoginRequiredMixin, View):
+    def post(self, request, slug):
+        blog_obj = get_object_or_404(BlogPost, slug=slug)
+
+        if request.user != blog_obj.author:
+            return HttpResponseForbidden()
+        
+        blog_obj.delete()
+        return JsonResponse({'status': 'success'})

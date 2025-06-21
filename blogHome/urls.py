@@ -9,4 +9,5 @@ urlpatterns =[
     path('editblog/<slug:slug>',views.editView.as_view(),name='editView'),
     path('',views.blogHome,name='blogHome'),
     path('<slug:slug>/',views.blogPage,name='blogPage'),
+    path('deleteBlog/<slug:slug>',views.deleteBlog.as_view(),name='deleteBlog')
 ]
