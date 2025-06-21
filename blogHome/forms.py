@@ -4,7 +4,7 @@ from .models import BlogPost
 class BlogForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'content']
+        fields = ['title', 'content','slug','sno']
 
     def clean_title(self):
         title = self.cleaned_data.get('title')

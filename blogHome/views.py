@@ -55,32 +55,39 @@ def commentHandler(request, post_id):
     return redirect(reverse_lazy("blogHome:blogPage", args=[post.slug]))
 
 class editView(View):
-    def get(self,request,slug):
-        blog=get_object_or_404(BlogPost,slug=slug)
-        form=BlogForm(instance=blog)
-        print(blog.title)
-        print(form['title'].value)
-        print(blog)
+    def get(self, request, slug):
+        print('get')
+        blog = get_object_or_404(BlogPost, slug=slug)
+        
         if request.user != blog.author:
             return HttpResponseForbidden()
-
-        return render(request,'blogHome/blogedit.html',{'title':blog.title,'content':blog.content,'blog':blog,'slug':blog.slug})
+        
+        form = BlogForm(instance=blog)
+        
+        return render(request, 'blogHome/blogedit.html', {
+            'form': form,
+            'blog': blog,
+            'slug': blog.slug,
+            'sno': blog.sno
+        })
     
-    def post(self,request,slug):
-        blog=get_object_or_404(BlogPost,slug=request.POST.get('slug'))
-        slug=blog.slug
-        blgfrm=BlogForm(request.POST,instance=blog)
+    def post(self, request, slug):
+        print('post')
+        blog = get_object_or_404(BlogPost, slug=slug)
         
         if request.user != blog.author:
             return HttpResponseForbidden()
         
-        if blgfrm.is_valid():
-            blgfrm.save()
-            return redirect(reverse_lazy('blogHome:blogPage',kwargs={'slug': blog.slug}))
+        form = BlogForm(request.POST, instance=blog)
         
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('blogHome:blogPage', kwargs={'slug': blog.slug}))
         else:
-            inv_title=request.POST.get('title')
-            inv_content=request.POST.get('content')
-            print(inv_content)
-            print(inv_title)
-            return render(request,'blogHome/blogedit.html',{'title':inv_title,'content':inv_content,'blog':None,'slug':slug})
+            # Form is invalid, render template with form errors and submitted data
+            return render(request, 'blogHome/blogedit.html', {
+                'form': form,  # This contains the submitted data and errors
+                'blog': blog,
+                'slug': blog.slug,
+                'sno': blog.sno
+            })
