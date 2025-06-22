@@ -17,4 +17,5 @@ urlpatterns=[
     path('bioedit/', views.editBio.as_view(),name='editBio'),
     path('usrprofile/<str:author>',views.viewAuthorProfile.as_view(),name='viewAuthor'),
     path('postBlog/',views.postBlog.as_view(),name='postBlog'),
+    path('updateprofile/',views.updateProfilePic.as_view(),name='updateProfilePic')
 ]
