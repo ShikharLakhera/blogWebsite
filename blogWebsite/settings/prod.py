@@ -36,3 +36,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')  # fallback is 
 
 # Optional: allow Render health checks
 # if using `/healthz` or similar endpoints, add them to ALLOWED_HOSTS or middleware exclusions
+
+INSTALLED_APPS += [
+    'cloudinary',
+    'cloudinary_storage',
+]
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dphwkezyr',
+    'API_KEY': '783164194962795',
+    'API_SECRET': 'vtKERxS6mTngNQan770VKb6Tydo',
+}
