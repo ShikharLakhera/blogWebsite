@@ -116,6 +116,9 @@ def logout_view(request):
 
 class profileView(View):
     def get(self, request, username):
+        from django.conf import settings
+        print(">>> Active DEFAULT_FILE_STORAGE:", settings.DEFAULT_FILE_STORAGE)
+
         # Debugging print statements
         print(f"Looking for user with username: {username}")
         userobj=User.objects.filter(username=username).first()
