@@ -116,6 +116,7 @@ def logout_view(request):
 
 class profileView(View):
     def get(self, request, username):
+        
         from django.conf import settings
         print(">>> Active DEFAULT_FILE_STORAGE:", settings.DEFAULT_FILE_STORAGE)
 
