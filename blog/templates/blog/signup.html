@@ -72,6 +72,14 @@
         <div class="mt-6">
             <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700">Sign Up</button>
         </div>
+        {% load socialaccount %}
+        <div class="mt-6 text-center">
+            <p class="mb-2 text-gray-600 font-semibold">Or sign up with</p>
+            <a href="{% url 'google_login' %}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">
+                <img src="https://developers.google.com/identity/images/g-logo.png" class="h-5 w-5 mr-2" alt="Google logo" />
+                <span class="text-sm font-medium text-gray-700">Sign Up with Google</span>
+            </a>
+        </div>
     </form>
 </div>
 

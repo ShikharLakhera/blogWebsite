@@ -16,6 +16,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     'blog',
     'blogHome',
 ]
@@ -28,6 +36,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'blogWebsite.urls'
@@ -76,3 +86,21 @@ CSP_SCRIPT_SRC = ("'self'", "https://cdn.tiny.cloud", "'unsafe-inline'", "'unsaf
 # Authentication
 LOGIN_URL = reverse_lazy('blog:login')
 LOGIN_REDIRECT_URL = reverse_lazy('blog:home')
+
+#for integrating google login
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth
+]
+#Very important-so the problem was site id was set to 1 but in db it didnt exiated site with pk=2 was there
+SITE_ID = 2
+
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # * means required
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_VERIFICATION_METHOD = 'optional'  # or 'mandatory', if you want strict email checks
+
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'optional'  # needed if you're not verifying via email
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET= True
+

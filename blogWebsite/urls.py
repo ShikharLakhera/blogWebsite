@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('blog.urls')),
     path('blogHome/',include('blogHome.urls')),
+    path('accounts/', include('allauth.urls'),),
 ]
 
 if settings.DEBUG:  # Serve media files during development

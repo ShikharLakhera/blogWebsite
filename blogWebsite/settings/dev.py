@@ -15,3 +15,21 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+from decouple import config
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_CLIENT_SECRET'),
+        }
+    }
+}
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dphwkezyr',
+    'API_KEY': '783164194962795',
+    'API_SECRET': 'vtKERxS6mTngNQan770VKb6Tydo',
+}
+
+
