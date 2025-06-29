@@ -44,10 +44,26 @@ INSTALLED_APPS += [
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+import os
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dphwkezyr',
-    'API_KEY': '783164194962795',
-    'API_SECRET': 'vtKERxS6mTngNQan770VKb6Tydo',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+
+from decouple import config
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
+        }
+    }
 }
 
 

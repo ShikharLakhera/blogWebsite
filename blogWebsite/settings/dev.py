@@ -26,10 +26,4 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dphwkezyr',
-    'API_KEY': '783164194962795',
-    'API_SECRET': 'vtKERxS6mTngNQan770VKb6Tydo',
-}
-
 
