@@ -387,14 +387,8 @@ class updateProfilePic(LoginRequiredMixin, View):
                 except Exception as e:
                     print(f"Error deleting old image: {e}")
             
-            # Force Cloudinary storage
-            from cloudinary_storage.storage import MediaCloudinaryStorage
-            cloudinary_storage = MediaCloudinaryStorage()
-            
-            # Save new image directly using Cloudinary storage
-            file_name = cloudinary_storage.save(uploaded_file.name, uploaded_file)
-            profile.profile_pic = file_name
-            profile.save()
+            # Save new image directly to Cloudinary
+            profile.profile_pic.save(uploaded_file.name, uploaded_file, save=True)
             
             return JsonResponse({
                 'status': 'success',
