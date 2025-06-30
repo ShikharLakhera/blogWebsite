@@ -116,7 +116,7 @@ def logout_view(request):
 
 class profileView(View):
     def get(self, request, username):
-        
+
         from django.conf import settings
         print(">>> Active DEFAULT_FILE_STORAGE:", settings.DEFAULT_FILE_STORAGE)
 
@@ -367,18 +367,26 @@ class updateProfilePic(LoginRequiredMixin, View):
                     'message': 'File size too large. Maximum size is 5MB.'
                 }, status=400)
 
-        # Get or create profile
+            # Get or create profile
             profile, _ = Profile.objects.get_or_create(user=request.user)
 
-        # Delete old image if not default
+            # Delete old image if not default
             if profile.profile_pic and profile.profile_pic.name != 'profile_pic/defpic.png':
                 try:
                     profile.profile_pic.delete(save=False)
                 except Exception as e:
                     print(f"Error deleting old image: {e}")
 
-        # Directly save uploaded file (Cloudinary will handle this)
-            profile.profile_pic = uploaded_file
+            # Use Cloudinary to save uploaded file
+            from cloudinary_storage.storage import MediaCloudinaryStorage
+            from django.core.files.base import File
+
+            storage = MediaCloudinaryStorage()
+            uploaded_file.name = uploaded_file.name.replace(" ", "_")
+            file_path = storage.save(f"profile_pic/{uploaded_file.name}", uploaded_file)
+
+            # Save to model correctly
+            profile.profile_pic.save(file_path, File(uploaded_file), save=False)
             profile.save()
 
             return JsonResponse({

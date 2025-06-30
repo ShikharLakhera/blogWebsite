@@ -2,6 +2,10 @@
 # I have splt the settings into 3 parts so i can continue development even when my site is deployed
 from .base import *
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 DEBUG = True
 ALLOWED_HOSTS = []
 
