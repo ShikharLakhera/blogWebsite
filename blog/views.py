@@ -120,6 +120,10 @@ class profileView(View):
         from django.conf import settings
         print(">>> Active DEFAULT_FILE_STORAGE:", settings.DEFAULT_FILE_STORAGE)
 
+        from django.core.files.storage import default_storage
+        print(default_storage.__class__)
+        # Should show: cloudinary_storage.storage.MediaCloudinaryStorage
+
         # Debugging print statements
         print(f"Looking for user with username: {username}")
         userobj=User.objects.filter(username=username).first()
@@ -364,7 +368,7 @@ class updateProfilePic(LoginRequiredMixin, View):
             profile, created = Profile.objects.get_or_create(user=request.user)
             
             # Delete old image if it exists and is not the default
-            if profile.profile_pic and profile.profile_pic.name != 'profile_pic/defpic.png':
+            if profile.profile_pic and 'defpic.png' not in profile.profile_pic.name:
                 try:
                     profile.profile_pic.delete(save=False)
                 except Exception as e:
@@ -382,4 +386,3 @@ class updateProfilePic(LoginRequiredMixin, View):
         except Exception as e:
             print(f"Profile picture update error: {e}")
             return JsonResponse({'status': 'error', 'message': f'An error occurred: {str(e)}'}, status=500)
-
