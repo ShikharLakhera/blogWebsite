@@ -36,11 +36,12 @@ X_FRAME_OPTIONS = 'DENY'
 # Secret key from environment
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
 
-# Add Cloudinary apps
-INSTALLED_APPS += [
-    'cloudinary_storage',
+# Add Cloudinary apps - ORDER MATTERS!
+INSTALLED_APPS = [
+    # Your existing apps from base.py
+    'cloudinary_storage',  # Must be before 'django.contrib.staticfiles'
     'cloudinary',
-]
+] + INSTALLED_APPS  # Add to the beginning
 
 # Cloudinary Configuration
 cloudinary.config(
@@ -50,7 +51,17 @@ cloudinary.config(
     secure=True
 )
 
-# File Storage Configuration
+# File Storage Configuration for Django 4.2+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Keep this for backward compatibility
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Media URL (can be left as default since Cloudinary handles URLs)

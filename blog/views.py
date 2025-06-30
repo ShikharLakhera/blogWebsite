@@ -351,8 +351,21 @@ from .models import Profile  # Adjust import based on your app structure
 class updateProfilePic(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         try:
+            # Debug: Check what storage is being used
+            from django.conf import settings
+            from django.core.files.storage import default_storage
+            print(f"DEFAULT_FILE_STORAGE: {getattr(settings, 'DEFAULT_FILE_STORAGE', 'Not set')}")
+            print(f"Default storage class: {default_storage.__class__}")
+            print(f"Cloudinary config exists: {'cloudinary' in dir()}")
+            
             if 'profile_picture' not in request.FILES:
                 return JsonResponse({'status': 'error', 'message': 'No file uploaded'}, status=400)
+            
+            # Debug: Check environment variables
+            import os
+            print(f"CLOUDINARY_CLOUD_NAME: {os.environ.get('CLOUDINARY_CLOUD_NAME', 'NOT SET')}")
+            print(f"CLOUDINARY_API_KEY: {os.environ.get('CLOUDINARY_API_KEY', 'NOT SET')}")
+            print(f"CLOUDINARY_API_SECRET: {'SET' if os.environ.get('CLOUDINARY_API_SECRET') else 'NOT SET'}")
             
             uploaded_file = request.FILES['profile_picture']
             
@@ -374,8 +387,14 @@ class updateProfilePic(LoginRequiredMixin, View):
                 except Exception as e:
                     print(f"Error deleting old image: {e}")
             
-            # Save new image directly to Cloudinary
-            profile.profile_pic.save(uploaded_file.name, uploaded_file, save=True)
+            # Force Cloudinary storage
+            from cloudinary_storage.storage import MediaCloudinaryStorage
+            cloudinary_storage = MediaCloudinaryStorage()
+            
+            # Save new image directly using Cloudinary storage
+            file_name = cloudinary_storage.save(uploaded_file.name, uploaded_file)
+            profile.profile_pic = file_name
+            profile.save()
             
             return JsonResponse({
                 'status': 'success',
