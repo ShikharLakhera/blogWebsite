@@ -102,3 +102,4 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = 'optional'  # needed if you're not verifying 
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET= True
 
+MEDIA_URL = '/media/'

@@ -348,57 +348,38 @@ class updateProfilePic(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         try:
             if 'profile_picture' not in request.FILES:
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'No file uploaded'
-                }, status=400)
-
+                return JsonResponse({'status': 'error', 'message': 'No file uploaded'}, status=400)
+            
             uploaded_file = request.FILES['profile_picture']
-
+            
+            # Validate file type
             if not uploaded_file.content_type.startswith('image/'):
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Invalid file type. Please upload an image.'
-                }, status=400)
-
+                return JsonResponse({'status': 'error', 'message': 'Invalid file type. Please upload an image.'}, status=400)
+            
+            # Validate file size (5MB max)
             if uploaded_file.size > 5 * 1024 * 1024:
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'File size too large. Maximum size is 5MB.'
-                }, status=400)
-
+                return JsonResponse({'status': 'error', 'message': 'File size too large. Max is 5MB.'}, status=400)
+            
             # Get or create profile
-            profile, _ = Profile.objects.get_or_create(user=request.user)
-
-            # Delete old image if not default
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            
+            # Delete old image if it exists and is not the default
             if profile.profile_pic and profile.profile_pic.name != 'profile_pic/defpic.png':
                 try:
                     profile.profile_pic.delete(save=False)
                 except Exception as e:
                     print(f"Error deleting old image: {e}")
-
-            # Use Cloudinary to save uploaded file
-            from cloudinary_storage.storage import MediaCloudinaryStorage
-            from django.core.files.base import File
-
-            storage = MediaCloudinaryStorage()
-            uploaded_file.name = uploaded_file.name.replace(" ", "_")
-            file_path = storage.save(f"profile_pic/{uploaded_file.name}", uploaded_file)
-
-            # Save to model correctly
-            profile.profile_pic.save(file_path, File(uploaded_file), save=False)
-            profile.save()
-
+            
+            # Save new image directly to Cloudinary
+            profile.profile_pic.save(uploaded_file.name, uploaded_file, save=True)
+            
             return JsonResponse({
                 'status': 'success',
                 'message': 'Profile picture updated successfully',
                 'new_image_url': profile.profile_pic.url
             })
-
+            
         except Exception as e:
-            return JsonResponse({
-                'status': 'error',
-                'message': f'An error occurred: {str(e)}'
-            }, status=500)
-
+            print(f"Profile picture update error: {e}")
+            return JsonResponse({'status': 'error', 'message': f'An error occurred: {str(e)}'}, status=500)
 

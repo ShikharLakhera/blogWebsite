@@ -1,8 +1,8 @@
 # blogWebsite/settings/dev.py
 # I have splt the settings into 3 parts so i can continue development even when my site is deployed
 from .base import *
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
